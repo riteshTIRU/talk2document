@@ -1,0 +1,54 @@
+<html>
+  <head>
+    <title>CHAT</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+ 
+  </head>
+  <body>
+    <h2>Chat with Llama</h2>
+    <form id="chat-form" method="post">
+      {% csrf_token %}
+      <input type="text" id="message" name="message" placeholder="Type your question" >
+      <button type="submit" id="submit">Send</button>
+      <input type="text" id="response" name="response" value=None hidden>
+    </form>
+
+    <div id="response-box" style="margin-top:20px; white-space: pre-line;"></div>
+
+    <script>
+      $(document).ready(function(){
+
+        $("#submit").on("click",function(event)
+        {
+          event.preventDefault();
+
+          var message = $("#message").val();
+
+
+          $.ajax({
+
+            url : "{% url 'query' %}" ,
+            type : "POST",
+            data : {
+              'message' : message,
+              'csrfmiddlewaretoken': '{{ csrf_token }}',},
+
+            success : function(data)
+            {
+              if(data.error)
+              {
+                alert("erro!")
+              }
+              else
+              {
+                alert(data.message);
+              }
+            },
+          })
+
+        });
+
+      });
+    </script>
+  </body>
+</html>
